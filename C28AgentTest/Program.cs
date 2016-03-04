@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SprintMarketing.C28.ExchangeAgent;
-using SprintMarketing.C28.ExchangeAgent.Agents.SprintMarketing;
 
 namespace C28AgentTest
 {

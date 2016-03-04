@@ -7,8 +7,8 @@
     <ProjectGuid>{C9B7D834-12AE-4968-BD6A-A386AC6458C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rhesus.Agents.SprintMarketing</RootNamespace>
-    <AssemblyName>Rhesus.Agents.SprintMarketing</AssemblyName>
+    <RootNamespace>SprintMarketing.C28.ExchangeAgent</RootNamespace>
+    <AssemblyName>SprintMarketing.C28.ExchangeAgent</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

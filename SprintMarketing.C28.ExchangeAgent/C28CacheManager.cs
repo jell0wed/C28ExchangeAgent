@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SprintMarketing.C28.ExchangeAgent.Agents.SprintMarketing;
 using SprintMarketing.C28.ExchangeAgent.API.Models;
 
 namespace SprintMarketing.C28.ExchangeAgent

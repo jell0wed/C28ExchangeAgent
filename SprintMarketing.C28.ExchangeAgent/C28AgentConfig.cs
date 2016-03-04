@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using SprintMarketing.C28.ExchangeAgent.Agents.SprintMarketing;
 
 namespace SprintMarketing.C28.ExchangeAgent
 {
