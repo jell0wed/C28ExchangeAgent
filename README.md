@@ -87,9 +87,29 @@ Get-TransportAgent "C28 Transport Agent" | Enable-TransportAgent
 
 #### 4. Configure config.json 
 
- 
+Open the file `config.json` and configure it to suit your needs.
 
+``` 
+{
+  "fetch_api_key": "<your api key>",
+  "fetch_interval_min": 20,
+  "fetch_eager":  false,
+  "fetch_url": "",
+  "fetch_cache_file": "cache.json",
+  "log_file": "c28.log",
+  "log_level": "All",
+  "log_max_size":  "20MB"
+}
+```
 
+* **fetch_api_key**: your api key (contact us)
+* **fetch_interval_min**: number of mins elapsed to update the cache
+* **fetch_eager**: always fetch the domain data from the remote api (*Warning*: this will fetch domain data from the api for every incoming email -not recommended)
+* **fetch_url**: http(s) base api uri where to fetch domain data (contact us)
+* **fetch_cache_file**: path where to store the cached domain data
+* **log_file**: path where to store the log file
+* **log_level**: one of `all|off|debug|info|warn|error|fatal`
+* **log_max_size**: max log size before the rotating log file
 
 
 
