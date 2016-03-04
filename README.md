@@ -12,7 +12,7 @@ Get-TransportAgent
 
  and check whether there is an entry named "C28 Transport Agent"
 
-*if there is no such entry, skip to step X*
+*if there is no such entry, skip to step 3*
 
 #### 2. Removing the installed TransportAgent
 
