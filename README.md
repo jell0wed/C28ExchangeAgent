@@ -85,6 +85,10 @@ Get-TransportAgent "C28 Transport Agent" | Enable-TransportAgent
 
 *** Retart your PowerShell and the MSExchangeTransport Service ***
 
+#### 4. Configure config.json 
+
+ 
+
 
 
 
