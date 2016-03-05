@@ -42,9 +42,13 @@ Create a directory wherever you want (it is suggested to use ```C:\Program Files
 
 Clone the git repository content in that folder.
 
-Add total control permissions to the Network Service group to the newly created directory. 
+Add **total control permissions** to the Network Service group to the newly created directory.
 
-*(Le nom en français est Service Reseau)*
+(The exact english name is NETWORK SERVICE)
+
+*(Le nom en français est SERVICE RESEAU)*
+
+but really just type in "SERVICE" and hit the "Verify Names..." or "Vérifier les noms..." button and select the NETWORK SERVICE user/group.
 
 ##### 3.2 Creating the environment variable
 
