@@ -38,17 +38,13 @@ You may me prompted to confirm the removal of the agent.
 
 ##### 3.1 Creating the directory copying files and adjusting permissions
 
-Create a directory wherever you want (it is suggested to use ```C:\Program Files\C28ExchangeAgent\``` as it will be used throughout this guide).
+Create a directory named `C28` in the exchange transport agents directory so that the full path to the C28 Transport Agent DLLs looks like this :
 
-Clone the git repository content in that folder.
+``` 
+C:\Program Files\Microsoft\Exchange Server\V<exchange version>\TransportRoles\agents\C28
+```
 
-Add **total control permissions** to the Network Service group to the newly created directory.
-
-(The exact english name is NETWORK SERVICE)
-
-*(Le nom en français est SERVICE RESEAU)*
-
-but really just type in "SERVICE" and hit the "Verify Names..." or "Vérifier les noms..." button and select the NETWORK SERVICE user/group.
+Clone the git repository *content* in that folder.
 
 ##### 3.2 Creating the environment variable
 
@@ -56,7 +52,7 @@ Create a *system environment variable* as follows:
 
 ``` 
 Name: C28AgentInstallDir
-Value: C:\Program Files\C28ExchangeAgent (or your installation path)
+Value: C:\Program Files\Microsoft\Exchange Server\V<exchange version>\TransportRoles\agents\C28
 ```
 
 ##### 3.2 Installing the new transport agent
@@ -89,7 +85,7 @@ Get-TransportAgent "C28 Transport Agent" | Enable-TransportAgent
 
 *** Retart your PowerShell and the MSExchangeTransport Service ***
 
-#### 4. Configure config.json 
+#### 4. Configure config.json
 
 Open the file `config.json` and configure it to suit your needs.
 
@@ -115,7 +111,9 @@ Open the file `config.json` and configure it to suit your needs.
 * **log_level**: one of `all|off|debug|info|warn|error|fatal`
 * **log_max_size**: max log size before the rotating log file
 
+The `config.json`, `cache.json` and `c28.log` file paths are not absolute file paths. Those files will be created at the root of your environment variable `$C28AgentInstallDir`. 
 
+Please contact us to get your **api_key** and the **fetch_url** url.
 
 
 

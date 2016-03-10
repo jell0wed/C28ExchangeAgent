@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.IO;
 using log4net;
 using log4net.Repository.Hierarchy;
 using log4net.Core;
@@ -37,7 +38,7 @@ namespace SprintMarketing.C28.ExchangeAgent
 
             var roller = new RollingFileAppender();
             roller.AppendToFile = true;
-            roller.File = config.getAsString(C28ConfigValues.LOG_FILE);
+            roller.File = Path.Combine(Environment.GetEnvironmentVariable("C28AgentInstallDir"), config.getAsString(C28ConfigValues.LOG_FILE));
             roller.Layout = layout;
             roller.MaxSizeRollBackups = 0;
             roller.MaximumFileSize = config.getAsString(C28ConfigValues.LOG_MAX_SIZE);
