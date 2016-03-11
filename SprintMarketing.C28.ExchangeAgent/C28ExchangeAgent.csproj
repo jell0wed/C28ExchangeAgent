@@ -37,13 +37,6 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CSharp">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Exchange.Data.Common, Version=15.0.843.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\Microsoft.Exchange.Data.Common.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport">
       <HintPath>..\..\..\..\..\Desktop\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
@@ -59,12 +52,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="api\C28APIException.cs" />
