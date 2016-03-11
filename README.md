@@ -127,7 +127,7 @@ Open the file `config.json` and configure it to suit your needs.
   "log_file": "c28.log",
   "log_level": "All",
   "log_max_size":  "20MB",
-  "data-"
+  "data_base_path:" "C:\\c28-data"
 }
 ```
 
@@ -139,6 +139,7 @@ Open the file `config.json` and configure it to suit your needs.
 * **log_file**: path where to store the log file
 * **log_level**: one of `all|off|debug|info|warn|error|fatal`
 * **log_max_size**: max log size before the rotating log file
+* **data_base_path**: path where to store cache and log file
 
 The `config.json`, `cache.json` and `c28.log` file paths are not absolute file paths. Those files will be created at the root of your environment variable `$C28AgentInstallDir`. 
 
