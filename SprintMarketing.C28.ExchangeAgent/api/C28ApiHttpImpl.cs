@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Linq;
@@ -18,7 +19,6 @@ namespace SprintMarketing.C28.ExchangeAgent.API
         private static readonly JSchema json_schema_error = JSchema.Parse(ERROR_JSON_SCHEMA);
 
 
-        private HttpClient client = new HttpClient();
         private String apiKey = "";
         private String baseUri = "";
 
@@ -26,23 +26,21 @@ namespace SprintMarketing.C28.ExchangeAgent.API
             C28Logger.Debug(C28Logger.C28LoggerType.API, String.Format("Initializing C28 HTTP WebAPI with api key '{0}'", apiKey));
             this.apiKey = apiKey;
             this.baseUri = baseUri;
-
-            this.client.DefaultRequestHeaders.Accept.Clear();
-            this.client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task<string> getRequest(String uri) {
+        private string getRequest(String uri) {
             try
             {
-                using (HttpResponseMessage resp = await this.client.GetAsync(uri))
-                using (HttpContent content = resp.Content)
+                HttpWebRequest http = (HttpWebRequest) HttpWebRequest.Create(uri);
+                using (HttpWebResponse resp = (HttpWebResponse) http.GetResponse())
+                using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
                 {
-                    if (!resp.IsSuccessStatusCode)
+                    if (resp.StatusCode != HttpStatusCode.OK)
                     {
                         C28Logger.Warn(C28Logger.C28LoggerType.API, String.Format("Potentially invalid status code from a GET HTTP Response (received {0})", resp.StatusCode));
                     }
 
-                    String res = await resp.Content.ReadAsStringAsync();
+                    String res = sr.ReadToEnd();
                     JObject resJson = JObject.Parse(res);
                     if (resJson.IsValid(json_schema_error))
                     {
@@ -52,7 +50,7 @@ namespace SprintMarketing.C28.ExchangeAgent.API
                         throw new C28APIException(String.Format("Unexpected API Error : {0}", err.message));
                     }
 
-                    return await resp.Content.ReadAsStringAsync();
+                    return res;
                 }
             }
             catch (Exception e) {
@@ -68,7 +66,7 @@ namespace SprintMarketing.C28.ExchangeAgent.API
 
         public C28ExchangeData getExchangeData()
         {
-            String domainJson = Task.Run(() => getRequest(this.getUri("/exchange"))).Result;
+            String domainJson = getRequest(this.getUri("/exchange"));
             var data = JsonConvert.DeserializeObject<C28ExchangeData>(domainJson);
             if (data == null) {
                 C28Logger.Error(C28Logger.C28LoggerType.API, "Invalid exchange data sent from the API (unable to deserialize).");
