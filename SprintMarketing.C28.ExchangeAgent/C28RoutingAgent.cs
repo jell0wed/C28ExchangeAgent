@@ -95,7 +95,11 @@ namespace SprintMarketing.C28.ExchangeAgent {
             foreach (var recp in e.MailItem.Recipients) {
                 if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower())
                 {
-                    C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Message from '{0}' to '{1}' was ignored; both are on the same internal domain.", fromAddr.ToString(), recp.ToString()));
+                    C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Message from '{0}' to '{1}' was ignored; both are on the same internal domain.", fromAddr.ToString(), recp.Address.ToString()));
+                    continue;
+                } else if (recp.RecipientCategory == RecipientCategory.InSameOrganization)
+                {
+                    C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Recipient '{0}' is in the same organization; ignoring.", recp.Address.ToString()));
                     continue;
                 }
 
