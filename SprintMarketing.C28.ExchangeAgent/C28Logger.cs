@@ -38,7 +38,7 @@ namespace SprintMarketing.C28.ExchangeAgent
 
             var roller = new RollingFileAppender();
             roller.AppendToFile = true;
-            roller.File = Path.Combine(Environment.GetEnvironmentVariable("C28AgentInstallDir"), config.getAsString(C28ConfigValues.LOG_FILE));
+            roller.File = Path.Combine(config.getAsString(C28ConfigValues.DATA_BASE_PATH), config.getAsString(C28ConfigValues.LOG_FILE));
             roller.Layout = layout;
             roller.MaxSizeRollBackups = 0;
             roller.MaximumFileSize = config.getAsString(C28ConfigValues.LOG_MAX_SIZE);

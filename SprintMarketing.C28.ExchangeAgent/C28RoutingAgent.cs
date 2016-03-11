@@ -46,7 +46,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
                         @"WARNING: Agent is currently set to act in EAGER mode. Fetched data from the API wont be cached. Thus the WebAPI will be queried upon every incoming email. To change this setting, please refer to the config.json configuration file.");
                 }
 
-                String cachePath = Path.Combine(Environment.GetEnvironmentVariable("C28AgentInstallDir"), currentConfig.getAsString(C28ConfigValues.FETCH_CACHE_FILE));
+                String cachePath = Path.Combine(currentConfig.getAsString(C28ConfigValues.DATA_BASE_PATH), currentConfig.getAsString(C28ConfigValues.FETCH_CACHE_FILE));
                 C28CacheManager c28CacheManager = new C28CacheManager(cachePath, currentConfig.getAsInteger(C28ConfigValues.FETCH_INTERVAL_MIN));
                 IC28WebApi api = new C28APIHttpImpl(currentConfig.getAsString(C28ConfigValues.FETCH_URL), currentConfig.getAsString(C28ConfigValues.FETCH_API_KEY));
                 try

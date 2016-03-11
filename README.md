@@ -65,6 +65,16 @@ You can unlock a DLL by going in the File Properties dialog of that file and by 
 $env:C28AgentInstallDir\binaries\SprintMarketing.C28.ExchangeAgent.dll
 ```
 
+##### 3.5 Restart the IIS Services
+
+Issue the 
+
+``` 
+iisreset.exe
+```
+
+command to restart the IIS Services so that the new DLL gets loaded.
+
 ##### 3.4 Installing the new transport agent
 
 **From an Exchange PowerShell:**

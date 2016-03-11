@@ -12,7 +12,8 @@ namespace SprintMarketing.C28.ExchangeAgent
         FETCH_CACHE_FILE,
         LOG_FILE,
         LOG_LEVEL,
-        LOG_MAX_SIZE
+        LOG_MAX_SIZE,
+        DATA_BASE_PATH
     }
     
     public class C28AgentConfig
@@ -26,7 +27,8 @@ namespace SprintMarketing.C28.ExchangeAgent
             { C28ConfigValues.FETCH_CACHE_FILE, "cache.json" },
             { C28ConfigValues.LOG_FILE, "c28.log" },
             { C28ConfigValues.LOG_LEVEL, "debug" },
-            { C28ConfigValues.LOG_MAX_SIZE, "20MB" }
+            { C28ConfigValues.LOG_MAX_SIZE, "20MB" },
+            { C28ConfigValues.DATA_BASE_PATH, "C:\\" }
         };
         
         public static C28AgentConfig createConfig(String fileName) {

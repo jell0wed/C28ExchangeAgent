@@ -6,5 +6,6 @@
   "fetch_cache_file": "cache.json",
   "log_file": "c28.log",
   "log_level": "All",
-  "log_max_size":  "20MB"
+  "log_max_size": "20MB",
+  "data_path":  "C:\\c28logs\\"
 }
