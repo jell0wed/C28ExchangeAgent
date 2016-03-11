@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Rhesus.Agents.SprintMarketing;
+using SprintMarketing.C28.ExchangeAgent;
 
 namespace C28AgentTest
 {
@@ -11,7 +11,7 @@ namespace C28AgentTest
     {
         static void Main(string[] args)
         {
-            var test = new SprintRoutingAgent();
+            var test = new C28RoutingAgent();
         }
     }
 }
