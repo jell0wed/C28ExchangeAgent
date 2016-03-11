@@ -1,4 +1,4 @@
-To install the C28 Transport Agent
+# C28 Exchange Transport Agent
 
 #### 1. Make sure to uninstall previously installed version of the C28 Agent
 
@@ -55,7 +55,17 @@ Name: C28AgentInstallDir
 Value: C:\Program Files\Microsoft\Exchange Server\V<exchange version>\TransportRoles\agents\C28
 ```
 
-##### 3.2 Installing the new transport agent
+##### 3.3 (IMPORTANT) Unlock the DLL for execution (Windows Server feature only?)
+
+Windows Server seems to have some enhanced security features that prevent DLLs (unsigned?) from being executed. **Therefore, you need to unlock the C28 Transport Agent**:
+
+You can unlock a DLL by going in the File Properties dialog of that file and by clicking the "Unlock" ("Débloquer") button at the bottom of the dialog box. Do so for the C28 Transport Agent DLL file located at:
+
+``` 
+$env:C28AgentInstallDir\binaries\SprintMarketing.C28.ExchangeAgent.dll
+```
+
+##### 3.4 Installing the new transport agent
 
 **From an Exchange PowerShell:**
 
@@ -114,6 +124,8 @@ Open the file `config.json` and configure it to suit your needs.
 The `config.json`, `cache.json` and `c28.log` file paths are not absolute file paths. Those files will be created at the root of your environment variable `$C28AgentInstallDir`. 
 
 Please contact us to get your **api_key** and the **fetch_url** url.
+
+# Troubleshooting
 
 
 
