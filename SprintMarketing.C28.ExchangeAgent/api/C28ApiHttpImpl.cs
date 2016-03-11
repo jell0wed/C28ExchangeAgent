@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Linq;
@@ -13,37 +14,35 @@ namespace SprintMarketing.C28.ExchangeAgent.API
 {
     class C28APIHttpImpl : IC28WebApi
     {
-        private const string ERROR_JSON_SCHEMA = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"id\":\"http://jsonschema.net\",\"type\":\"object\",\"properties\":{\"error\":{\"id\":\"http://jsonschema.net/error\",\"type\":\"object\",\"properties\":{\"message\":{\"id\":\"http://jsonschema.net/error/message\",\"type\":\"string\"}},\"required\":[\"message\"]}},\"required\":[\"error\"]}";
+        private const String ERROR_JSON_SCHEMA = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"id\":\"http://jsonschema.net\",\"type\":\"object\",\"properties\":{\"error\":{\"id\":\"http://jsonschema.net/error\",\"type\":\"object\",\"properties\":{\"message\":{\"id\":\"http://jsonschema.net/error/message\",\"type\":\"string\"}},\"required\":[\"message\"]}},\"required\":[\"error\"]}";
 
         private static readonly JSchema json_schema_error = JSchema.Parse(ERROR_JSON_SCHEMA);
 
 
-        private readonly HttpClient client;
-        private string apiKey = "";
-        private string baseUri = "";
+        private String apiKey = "";
+        private String baseUri = "";
 
-        public C28APIHttpImpl(String baseUri, String apiKey) {
-            C28Logger.Debug(C28Logger.C28LoggerType.API, $"Initializing C28 HTTP WebAPI with api key '{apiKey}'");
+        public C28APIHttpImpl(String baseUri, String apiKey)
+        {
+            C28Logger.Debug(C28Logger.C28LoggerType.API, String.Format("Initializing C28 HTTP WebAPI with api key '{0}'", apiKey));
             this.apiKey = apiKey;
-            client = new HttpClient();
             this.baseUri = baseUri;
-
-            this.client.DefaultRequestHeaders.Accept.Clear();
-            this.client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        private async Task<string> getRequest(String uri) {
+        private string getRequest(String uri)
+        {
             try
             {
-                using (HttpResponseMessage resp = await this.client.GetAsync(uri))
-                using (HttpContent content = resp.Content)
+                HttpWebRequest http = (HttpWebRequest)HttpWebRequest.Create(uri);
+                using (HttpWebResponse resp = (HttpWebResponse)http.GetResponse())
+                using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
                 {
-                    if (!resp.IsSuccessStatusCode)
+                    if (resp.StatusCode != HttpStatusCode.OK)
                     {
                         C28Logger.Warn(C28Logger.C28LoggerType.API, String.Format("Potentially invalid status code from a GET HTTP Response (received {0})", resp.StatusCode));
                     }
 
-                    String res = await resp.Content.ReadAsStringAsync();
+                    String res = sr.ReadToEnd();
                     JObject resJson = JObject.Parse(res);
                     if (resJson.IsValid(json_schema_error))
                     {
@@ -53,25 +52,28 @@ namespace SprintMarketing.C28.ExchangeAgent.API
                         throw new C28APIException(String.Format("Unexpected API Error : {0}", err.message));
                     }
 
-                    return await resp.Content.ReadAsStringAsync();
+                    return res;
                 }
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 C28Logger.Error(C28Logger.C28LoggerType.API, String.Format("Something went wrong when processing HTTP Get Request to URI {0}", uri));
                 throw new Exception("Unable to process HTTP Get Request", e);
             }
         }
 
-        private String getUri(String uri) {
+        private String getUri(String uri)
+        {
             //TODO : use proper URI builder
             return this.baseUri + uri + "?api_key=" + this.apiKey;
         }
 
         public C28ExchangeData getExchangeData()
         {
-            String domainJson = Task.Run(() => getRequest(this.getUri("/exchange"))).Result;
+            String domainJson = getRequest(this.getUri("/exchange"));
             var data = JsonConvert.DeserializeObject<C28ExchangeData>(domainJson);
-            if (data == null) {
+            if (data == null)
+            {
                 C28Logger.Error(C28Logger.C28LoggerType.API, "Invalid exchange data sent from the API (unable to deserialize).");
                 C28Logger.Debug(C28Logger.C28LoggerType.API, "Received: " + domainJson);
                 throw new C28APIException("Received invalid serialized exchange data");
