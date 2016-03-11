@@ -46,6 +46,14 @@ C:\Program Files\Microsoft\Exchange Server\V<exchange version>\TransportRoles\ag
 
 Clone the git repository *content* in that folder.
 
+Also, create a *data-folder* wherever you want to store the log and cache file. It is recommended to use 
+
+``` 
+C:\c28-data\
+```
+
+as it will be used throughout this example. **You also need to grant the total permissions (read/write most importantly) to the "NETWORK SERVICES" ("SERVICES RÉSEAU") group on this folder.**
+
 ##### 3.2 Creating the environment variable
 
 Create a *system environment variable* as follows:
@@ -65,7 +73,7 @@ You can unlock a DLL by going in the File Properties dialog of that file and by 
 $env:C28AgentInstallDir\binaries\SprintMarketing.C28.ExchangeAgent.dll
 ```
 
-##### 3.5 Restart the IIS Services
+##### 3.4 Restart the IIS Services
 
 Issue the 
 
@@ -75,7 +83,7 @@ iisreset.exe
 
 command to restart the IIS Services so that the new DLL gets loaded.
 
-##### 3.4 Installing the new transport agent
+##### 3.5 Installing the new transport agent
 
 **From an Exchange PowerShell:**
 
@@ -89,7 +97,7 @@ You should be prompted to confirm the agent installation
 
 Issue `Get-TransportAgent` to make sure the agent has been properly installed.
 
-##### 3.3 Enabling and changing the agent priority
+##### 3.6 Enabling and changing the agent priority
 
 Issue the following to change the priority of the transport agent as the **first** transport agent:
 
@@ -118,7 +126,8 @@ Open the file `config.json` and configure it to suit your needs.
   "fetch_cache_file": "cache.json",
   "log_file": "c28.log",
   "log_level": "All",
-  "log_max_size":  "20MB"
+  "log_max_size":  "20MB",
+  "data-"
 }
 ```
 
