@@ -93,6 +93,12 @@ namespace SprintMarketing.C28.ExchangeAgent {
 
             C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart, domain.connector_override));
             foreach (var recp in e.MailItem.Recipients) {
+                if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower())
+                {
+                    C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Message from '{0}' to '{1}' was ignored; both are on the same internal domain.", fromAddr.ToString(), recp.ToString()));
+                    continue;
+                }
+
                 recp.SetRoutingOverride(new RoutingDomain(domain.connector_override));
             }
 
