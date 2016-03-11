@@ -7,5 +7,5 @@
   "log_file": "c28.log",
   "log_level": "All",
   "log_max_size":  "20MB",
-  "data_path": "C:\\c28-data"
+  "data_base_path": "C:\\c28-data"
 }
