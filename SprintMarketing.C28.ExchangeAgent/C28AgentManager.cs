@@ -10,7 +10,7 @@ namespace SprintMarketing.C28.ExchangeAgent
 {
     class C28AgentManager
     {
-        private static C28AgentManager instance;
+        private static C28AgentManager instance = null;
 
         public static C28AgentManager getInstance()
         {
