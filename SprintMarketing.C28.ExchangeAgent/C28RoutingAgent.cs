@@ -42,13 +42,13 @@ namespace SprintMarketing.C28.ExchangeAgent {
         {
             if (!this.context.shouldBeHandledByC28(e.MailItem))
             {
+                C28Logger.Info(C28Logger.C28LoggerType.AGENT, String.Format("Message from '{0}'. Domain is not present, ignoring.", e.MailItem.FromAddress.ToString()));
                 return;
             }
 
             C28ExchangeDomain domain = this.context.exchangeData.getDomain(e.MailItem.FromAddress.ToString());
             RoutingAddress fromAddr = e.MailItem.FromAddress;
             C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart, domain.connector_override));
-
             try
             {
                 Stream newBodyContent = e.MailItem.Message.Body.GetContentWriteStream();

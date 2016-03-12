@@ -23,6 +23,7 @@ namespace SprintMarketing.C28.ExchangeAgent.converters
 
                 ConverterReader html = new ConverterReader(uncompressedRtf, rtfToHtmlConvert);
                 rtfToHtmlConvert.Convert(html, writeStream);
+                C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Converted EmailMessage from RTF to HTML format.");
             }
             else
             {

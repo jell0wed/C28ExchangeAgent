@@ -13,7 +13,7 @@ namespace SprintMarketing.C28.ExchangeAgent.API.Models
         private List<C28ExchangeDomain> domains = new List<C28ExchangeDomain>();
 
         [JsonProperty(PropertyName = "client")]
-        public C28ExchangeClient currentClient { get; }
+        public C28ExchangeClient currentClient { get; set; }
 
         public bool hasDomain(String domain) {
             return this.domains.Any(d => d.domain.ToLower() == (domain.ToLower()));

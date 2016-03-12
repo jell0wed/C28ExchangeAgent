@@ -16,7 +16,7 @@ namespace SprintMarketing.C28.ExchangeAgent
 {
     public static class C28Logger
     {
-        public enum C28LoggerType { AGENT, API, CACHE, CONFIG, UTILS, ETC }
+        public enum C28LoggerType { AGENT, API, CACHE, CONFIG, UTILS, ETC, REWRITER }
 
         private static Dictionary<C28LoggerType, ILog> loggers = new Dictionary<C28LoggerType, ILog>() {
             { C28LoggerType.AGENT, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.AGENT)) },
@@ -24,7 +24,8 @@ namespace SprintMarketing.C28.ExchangeAgent
             { C28LoggerType.CACHE, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.CACHE)) },
             { C28LoggerType.CONFIG, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.CONFIG)) },
             { C28LoggerType.UTILS, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.UTILS)) },
-            { C28LoggerType.ETC, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.ETC)) }
+            { C28LoggerType.ETC, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.ETC)) },
+            { C28LoggerType.REWRITER, LogManager.GetLogger(Enum.GetName(typeof(C28LoggerType), C28LoggerType.REWRITER)) }
         };
 
         private const String LOG_LAYOUT = "%date [%thread] $-5level (%logger): %message%newline";

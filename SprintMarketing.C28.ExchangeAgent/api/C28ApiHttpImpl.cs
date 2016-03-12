@@ -65,7 +65,7 @@ namespace SprintMarketing.C28.ExchangeAgent.API
         private String getUri(String uri)
         {
             //TODO : use proper URI builder
-            return this.baseUri + uri + "?api_key=" + this.apiKey;
+            return this.baseUri + uri + "?api_key=" + this.apiKey + "&rand=" + Guid.NewGuid().ToString();
         }
 
         public C28ExchangeData getExchangeData()

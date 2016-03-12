@@ -13,6 +13,7 @@ namespace SprintMarketing.C28.ExchangeAgent.converters
         {
             if (format == BodyFormat.Rtf)
             {
+                C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Using RTF Message Converter");
                 return new C28RtfMessageConverter();
             }
             
