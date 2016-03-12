@@ -15,6 +15,7 @@ using System.Threading;
 using System.Configuration.Install;
 using Microsoft.Win32;
 using Microsoft.Exchange.Data.Transport.Smtp;
+using SprintMarketing.C28.ExchangeAgent.converters;
 
 namespace SprintMarketing.C28.ExchangeAgent {
     public class C28AgentFactory : RoutingAgentFactory
@@ -28,77 +29,43 @@ namespace SprintMarketing.C28.ExchangeAgent {
 
     public class C28RoutingAgent : RoutingAgent
     {
-        public static C28AgentConfig currentConfig = C28AgentConfig.defaultConfig();
-        public List<string> IgnoreDomains { get; set; }
-        private C28ExchangeData exchangeDomains;
+        private C28DecisionMaker context;
 
         public C28RoutingAgent()
         {
-            try
-            {
-                String configPath = Path.Combine(Environment.GetEnvironmentVariable("C28AgentInstallDir"), "config.json");
-                C28RoutingAgent.currentConfig = C28AgentConfig.createConfig(configPath);
-                C28Logger.Setup(C28RoutingAgent.currentConfig);
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "C-28 Transport Agent has been initialized");
-                if (currentConfig.getAsBoolean(C28ConfigValues.FETCH_EAGER))
-                {
-                    C28Logger.Warn(C28Logger.C28LoggerType.AGENT,
-                        @"WARNING: Agent is currently set to act in EAGER mode. Fetched data from the API wont be cached. Thus the WebAPI will be queried upon every incoming email. To change this setting, please refer to the config.json configuration file.");
-                }
+            this.context = C28AgentManager.getInstance().getContext();
 
-                String cachePath = Path.Combine(currentConfig.getAsString(C28ConfigValues.DATA_BASE_PATH), currentConfig.getAsString(C28ConfigValues.FETCH_CACHE_FILE));
-                C28CacheManager c28CacheManager = new C28CacheManager(cachePath, currentConfig.getAsInteger(C28ConfigValues.FETCH_INTERVAL_MIN));
-                IC28WebApi api = new C28APIHttpImpl(currentConfig.getAsString(C28ConfigValues.FETCH_URL), currentConfig.getAsString(C28ConfigValues.FETCH_API_KEY));
-                try
-                {
-                    if (!c28CacheManager.isValid() || currentConfig.getAsBoolean(C28ConfigValues.FETCH_EAGER))
-                    {
-                        C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Cache is invalid. Data from the API will be used.");
-                        this.exchangeDomains = api.getExchangeData();
-                        c28CacheManager.updateCache(this.exchangeDomains);
-                    }
-                    else {
-                        C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Cache is still valid. Cached data will be used.");
-                        this.exchangeDomains = c28CacheManager.retrieveFromCache();
-                    }
-                }
-                catch (Exception e)
-                {
-                    C28Logger.Error(C28Logger.C28LoggerType.AGENT, "Unexpected exception while fetching data. Cache will be invalidated and the API queried once more.", e);
-                    c28CacheManager.invalidateCache();
-                    this.exchangeDomains = api.getExchangeData();
-                    c28CacheManager.updateCache(this.exchangeDomains);
-                }
-
-                OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
-            }
-            catch (Exception e) {
-                C28Logger.Fatal(C28Logger.C28LoggerType.AGENT, "Unknown exception : " + e.Message, e);
-            }
+            OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
         }
 
         void SprintRoutingAgent_OnResolvedMessage(ResolvedMessageEventSource source, QueuedMessageEventArgs e)
         {
+            if (!this.context.shouldBeHandledByC28(e.MailItem))
+            {
+                return;
+            }
+
+            C28ExchangeDomain domain = this.context.exchangeData.getDomain(e.MailItem.FromAddress.ToString());
             RoutingAddress fromAddr = e.MailItem.FromAddress;
-            if (!this.exchangeDomains.hasDomain(fromAddr.DomainPart)) {
-                C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Sender '{0}' does not belong to any listed domain. Ignoring.", fromAddr.ToString()));
-                return;
-            }
-
-            C28ExchangeDomain domain = this.exchangeDomains.getDomain(fromAddr.DomainPart);
-            if (domain.isEmailExcluded(fromAddr.ToString())) {
-                C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Sender '{0}' is set to be excluded. Ignoring.", fromAddr.ToString()));
-                return;
-            }
-
             C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart, domain.connector_override));
+
+            try
+            {
+                Stream newBodyContent = e.MailItem.Message.Body.GetContentWriteStream();
+                C28MessageConverterFactory.getConverterForEmailMessage(e.MailItem.Message.Body.BodyFormat).convert(e.MailItem.Message, ref newBodyContent);
+            }
+            catch (C28ConverterException ee)
+            {
+                C28Logger.Error(C28Logger.C28LoggerType.AGENT, "Error while trying to convert message", ee);
+            }
+
             foreach (var recp in e.MailItem.Recipients) {
-                if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower())
+                if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower() && domain.same_domain_action == "LocalDelivery")
                 {
                     C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Message from '{0}' to '{1}' was ignored; both are on the same internal domain.", fromAddr.ToString(), recp.Address.ToString()));
                     continue;
-                } else if (recp.RecipientCategory == RecipientCategory.InSameOrganization)
-                {
+                }
+                if (recp.RecipientCategory == RecipientCategory.InSameOrganization && this.context.exchangeData.currentClient.same_organization_action == "LocalDelivery") {
                     C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Recipient '{0}' is in the same organization; ignoring.", recp.Address.ToString()));
                     continue;
                 }

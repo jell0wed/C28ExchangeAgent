@@ -63,14 +63,23 @@
     <Compile Include="api\C28APIException.cs" />
     <Compile Include="api\C28ApiHttpImpl.cs" />
     <Compile Include="api\models\C28APIError.cs" />
+    <Compile Include="api\models\C28ExchangeClient.cs" />
     <Compile Include="api\models\C28ExchangeData.cs" />
     <Compile Include="api\models\C28ExchangeDomain.cs" />
     <Compile Include="api\models\C28ExchangeExclusion.cs" />
     <Compile Include="C28AgentConfig.cs" />
+    <Compile Include="C28AgentManager.cs" />
+    <Compile Include="C28AgentException.cs" />
+    <Compile Include="C28DecisionMaker.cs" />
     <Compile Include="C28Logger.cs" />
     <Compile Include="C28CacheManager.cs" />
     <Compile Include="api\IC28WebApi.cs" />
     <Compile Include="C28RoutingAgent.cs" />
+    <Compile Include="converters\C28APIException.cs" />
+    <Compile Include="converters\C28MessageConverter.cs" />
+    <Compile Include="converters\C28MessageConverterFactory.cs" />
+    <Compile Include="converters\C28TextBasedMessageConverter.cs" />
+    <Compile Include="converters\C28RtfMessageConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
