@@ -32,7 +32,6 @@ namespace SprintMarketing.C28.ExchangeAgent {
     {
         public C28RoutingAgent()
         {
-            var context = C28AgentManager.getInstance().getContext().exchangeData.getDomain("test");
             OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
         }
 
@@ -50,6 +49,10 @@ namespace SprintMarketing.C28.ExchangeAgent {
                 }
 
                 C28ExchangeDomain domain = context.exchangeData.getDomain(e.MailItem.FromAddress.ToString());
+                if (domain == null)
+                {
+                    return;
+                }
                 RoutingAddress fromAddr = e.MailItem.FromAddress;
                 C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
                     String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart,
