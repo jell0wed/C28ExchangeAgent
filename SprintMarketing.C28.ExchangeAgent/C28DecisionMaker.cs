@@ -28,7 +28,10 @@ namespace SprintMarketing.C28.ExchangeAgent
             }
 
             C28ExchangeDomain domain = this.exchangeData.getDomain(fromAddr.DomainPart);
-            if (domain.isEmailExcluded(fromAddr.ToString()))
+            if (domain == null)
+            {
+                return false;
+            } else if (domain.isEmailExcluded(fromAddr.ToString()))
             {
                 C28Logger.Debug(C28Logger.C28LoggerType.AGENT, String.Format("Sender '{0}' is set to be excluded. Ignoring.", fromAddr.ToString()));
                 return false;

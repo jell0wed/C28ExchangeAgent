@@ -20,7 +20,7 @@ namespace SprintMarketing.C28.ExchangeAgent.API.Models
         }
 
         public C28ExchangeDomain getDomain(String domain) {
-            return this.domains.First(d => d.domain.ToLower() == (domain.ToLower()));
+            return this.domains.FirstOrDefault(d => d.domain.ToLower() == (domain.ToLower()));
         }
 
         public int getCount() { return this.domains.Count; }

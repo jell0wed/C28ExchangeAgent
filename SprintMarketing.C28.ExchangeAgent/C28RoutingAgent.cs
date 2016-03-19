@@ -32,6 +32,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
     {
         public C28RoutingAgent()
         {
+            var context = C28AgentManager.getInstance().getContext().exchangeData.getDomain("test");
             OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
         }
 
