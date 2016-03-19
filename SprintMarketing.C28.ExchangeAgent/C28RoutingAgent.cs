@@ -48,9 +48,10 @@ namespace SprintMarketing.C28.ExchangeAgent {
                     return;
                 }
 
-                C28ExchangeDomain domain = context.exchangeData.getDomain(e.MailItem.FromAddress.ToString());
+                C28ExchangeDomain domain = context.exchangeData.getDomain(e.MailItem.FromAddress.DomainPart);
                 if (domain == null)
                 {
+                    C28Logger.Info(C28Logger.C28LoggerType.AGENT, String.Format("Domain '{0}' could not be found... Skipping entry", e.MailItem.FromAddress.DomainPart));
                     return;
                 }
                 RoutingAddress fromAddr = e.MailItem.FromAddress;
