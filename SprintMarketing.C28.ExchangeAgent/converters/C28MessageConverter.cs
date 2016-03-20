@@ -12,7 +12,7 @@ namespace SprintMarketing.C28.ExchangeAgent.converters
     public abstract class C28MessageConverter
     {
         
-        private Stream getMessageBodyStream(Body body)
+        protected Stream getMessageBodyStream(Body body)
         {
             Stream originalBodyStream;
             if (!body.TryGetContentReadStream(out originalBodyStream))
@@ -23,12 +23,11 @@ namespace SprintMarketing.C28.ExchangeAgent.converters
             return originalBodyStream;
         }
 
-        protected abstract void convertMessage(EmailMessage msg, Stream readStream, ref Stream writeStream);
+        protected abstract void convertMessage(ref EmailMessage msg);
 
-        public void convert(EmailMessage msg, ref Stream writeStream)
+        public void convert(ref EmailMessage msg)
         {
-            Stream bodyStream = this.getMessageBodyStream(msg.Body);
-            this.convertMessage(msg, bodyStream, ref writeStream);
+            this.convertMessage(ref msg);
         }
     }
 }

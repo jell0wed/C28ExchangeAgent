@@ -11,19 +11,29 @@ namespace SprintMarketing.C28.ExchangeAgent.converters
 {
     class C28RtfMessageConverter : C28MessageConverter
     {
-        protected override void convertMessage(EmailMessage msg, Stream bodyStream, ref Stream writeStream)
+        protected override void convertMessage(ref EmailMessage msg)
         {
             if (msg.Body.BodyFormat == BodyFormat.Rtf)
             {
-                ConverterStream uncompressedRtf = new ConverterStream(bodyStream, new RtfCompressedToRtf(),
-                    ConverterStreamAccess.Read);
-                RtfToHtml rtfToHtmlConvert = new RtfToHtml();
-                rtfToHtmlConvert.NormalizeHtml = true;
-                rtfToHtmlConvert.HeaderFooterFormat = HeaderFooterFormat.Html;
+                Stream bodyStream = this.getMessageBodyStream(msg.Body);
+                Stream writeStream = msg.Body.GetContentWriteStream();
+                try
+                {
+                    ConverterStream uncompressedRtf = new ConverterStream(bodyStream, new RtfCompressedToRtf(),
+                        ConverterStreamAccess.Read);
+                    RtfToHtml rtfToHtmlConvert = new RtfToHtml();
+                    rtfToHtmlConvert.NormalizeHtml = true;
+                    rtfToHtmlConvert.HeaderFooterFormat = HeaderFooterFormat.Html;
 
-                ConverterReader html = new ConverterReader(uncompressedRtf, rtfToHtmlConvert);
-                rtfToHtmlConvert.Convert(html, writeStream);
-                C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Converted EmailMessage from RTF to HTML format.");
+                    ConverterReader html = new ConverterReader(uncompressedRtf, rtfToHtmlConvert);
+                    rtfToHtmlConvert.Convert(html, msg.Body.GetContentWriteStream());
+                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Converted EmailMessage from RTF to HTML format.");
+                }
+                finally
+                {
+                    bodyStream.Close();
+                    writeStream.Close();
+                }
             }
             else
             {

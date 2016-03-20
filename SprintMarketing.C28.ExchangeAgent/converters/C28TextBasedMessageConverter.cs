@@ -11,7 +11,7 @@ namespace SprintMarketing.C28.ExchangeAgent.converters
 {
     class C28TextBasedMessageConverter : C28MessageConverter
     {
-        protected override void convertMessage(EmailMessage msg, Stream bodyStream, ref Stream writeStream)
+        protected override void convertMessage(ref EmailMessage msg)
         {
             if (!(msg.Body.BodyFormat == BodyFormat.Html || msg.Body.BodyFormat == BodyFormat.Text))
             {

@@ -74,6 +74,7 @@
     <Compile Include="C28Logger.cs" />
     <Compile Include="C28CacheManager.cs" />
     <Compile Include="api\IC28WebApi.cs" />
+    <Compile Include="C28RewritingAgent.cs" />
     <Compile Include="C28RoutingAgent.cs" />
     <Compile Include="converters\C28APIException.cs" />
     <Compile Include="converters\C28MessageConverter.cs" />
