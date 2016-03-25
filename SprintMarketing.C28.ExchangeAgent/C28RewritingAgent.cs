@@ -68,7 +68,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
                     {
                         return;
                     }
-                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewriting !! ... ");
+                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, String.Format("Rewriting !! ... BodyFormat = {0}", bodyFormat.ToString()));
                     if (BodyFormat.Rtf == bodyFormat)
                     {
 
