@@ -74,8 +74,8 @@ namespace SprintMarketing.C28.ExchangeAgent {
                         C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewriting -- Rtf body detected, trying to decode !! ... ");
                         //ConverterStream uncompressedRtf = new ConverterStream(originalBodyContent, new RtfCompressedToRtf(), ConverterStreamAccess.Read);
                         RtfToHtml rtfToHtmlConversion = new RtfToHtml();
-                        rtfToHtmlConversion.FilterHtml = true;
                         rtfToHtmlConversion.HeaderFooterFormat = HeaderFooterFormat.Html;
+                        rtfToHtmlConversion.NormalizeHtml = true;
                         ConverterReader html = new ConverterReader(originalBodyContent, rtfToHtmlConversion);
                         newBodyContent = body.GetContentWriteStream();
                         
