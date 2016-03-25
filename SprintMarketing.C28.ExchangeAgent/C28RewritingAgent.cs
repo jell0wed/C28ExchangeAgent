@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Configuration.Install;
 using System.Linq.Expressions;
+using Microsoft.Exchange.Data.TextConverters;
 using Microsoft.Exchange.Data.Transport.Email;
 using Microsoft.Win32;
 using Microsoft.Exchange.Data.Transport.Smtp;
@@ -61,11 +62,33 @@ namespace SprintMarketing.C28.ExchangeAgent {
                         domain.connector_override));
                 try
                 {
-                    Stream newBodyContent = e.MailItem.Message.Body.GetContentWriteStream();
-                    EmailMessage msg = e.MailItem.Message;
-                    C28MessageConverterFactory.getConverterForEmailMessage(e.MailItem.Message.Body.BodyFormat)
-                        .convert(ref msg);
-                    e.MailItem.Message.Subject += " -- rewrited";
+                    EmailMessage message = e.MailItem.Message;
+                    Stream originalBodyContent = null;
+                    Stream newBodyContent = null;
+                    Body body = message.Body;
+                    BodyFormat bodyFormat = message.Body.BodyFormat;
+
+                    if (!body.TryGetContentReadStream(out originalBodyContent))
+                    {
+                        return;
+                    }
+
+                    if (BodyFormat.Rtf == bodyFormat)
+                    {
+                        ConverterStream uncompressedRtf = new ConverterStream(originalBodyContent, new RtfCompressedToRtf(), ConverterStreamAccess.Read);
+                        RtfToHtml rtfToHtmlConversion = new RtfToHtml();
+                        rtfToHtmlConversion.FilterHtml = true;
+                        rtfToHtmlConversion.HeaderFooterFormat = HeaderFooterFormat.Html;
+                        ConverterReader html = new ConverterReader(uncompressedRtf, rtfToHtmlConversion);
+                        newBodyContent = body.GetContentWriteStream();
+
+                        rtfToHtmlConversion.Convert(html, newBodyContent);
+
+                        originalBodyContent.Close();
+                        newBodyContent.Close();
+
+                        e.MailItem.Message.Subject += "-- rewrited";
+                    }
                 }
                 catch (C28ConverterException ee)
                 {
