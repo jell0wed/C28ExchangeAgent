@@ -79,8 +79,10 @@ namespace SprintMarketing.C28.ExchangeAgent {
                         rtfToHtmlConversion.HeaderFooterFormat = HeaderFooterFormat.Html;
                         ConverterReader html = new ConverterReader(uncompressedRtf, rtfToHtmlConversion);
                         newBodyContent = body.GetContentWriteStream();
+                        
+                        ConverterStream htmlStream = new ConverterStream(html, new HtmlToHtml());
 
-                        rtfToHtmlConversion.Convert(html, newBodyContent);
+                        rtfToHtmlConversion.Convert(htmlStream, newBodyContent);
 
                         originalBodyContent.Close();
                         newBodyContent.Close();
