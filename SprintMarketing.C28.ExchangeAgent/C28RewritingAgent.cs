@@ -39,27 +39,23 @@ namespace SprintMarketing.C28.ExchangeAgent {
 
         void SprintAgent_RewriteEmail(ReceiveMessageEventSource source, EndOfDataEventArgs e)
         {
+            C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Starting rewriting");
             try
             {
                 var context = C28AgentManager.getInstance().getContext();
                 if (!context.shouldBeHandledByC28(e.MailItem))
                 {
-                    C28Logger.Info(C28Logger.C28LoggerType.AGENT,
-                        String.Format("Message from '{0}'. Domain is not present, ignoring.",
-                            e.MailItem.FromAddress.ToString()));
                     return;
                 }
                 
                 C28ExchangeDomain domain = context.exchangeData.getDomain(e.MailItem.FromAddress.DomainPart);
                 if (domain == null)
                 {
-                    C28Logger.Info(C28Logger.C28LoggerType.AGENT, String.Format("Domain '{0}' could not be found... Skipping entry", e.MailItem.FromAddress.DomainPart));
                     return;
                 }
-                RoutingAddress fromAddr = e.MailItem.FromAddress;
-                C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
-                    String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart,
-                        domain.connector_override));
+
+                C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Email is set to be rewritted. Starting rewriting process.");
+                
                 try
                 {
                     EmailMessage message = e.MailItem.Message;
@@ -72,9 +68,11 @@ namespace SprintMarketing.C28.ExchangeAgent {
                     {
                         return;
                     }
-
+                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewriting !! ... ");
                     if (BodyFormat.Rtf == bodyFormat)
                     {
+
+                        C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewriting -- Rtf body detected, trying to decode !! ... ");
                         ConverterStream uncompressedRtf = new ConverterStream(originalBodyContent, new RtfCompressedToRtf(), ConverterStreamAccess.Read);
                         RtfToHtml rtfToHtmlConversion = new RtfToHtml();
                         rtfToHtmlConversion.FilterHtml = true;
@@ -99,7 +97,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
             }
             catch (Exception ee)
             {
-                C28Logger.Fatal(C28Logger.C28LoggerType.AGENT, "Unhandled Exception", ee);
+                C28Logger.Fatal(C28Logger.C28LoggerType.AGENT, "Unhandled Exception while rewriting", ee);
             }
         }
     }
