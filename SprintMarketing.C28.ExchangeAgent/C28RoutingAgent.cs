@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Configuration.Install;
 using System.Linq.Expressions;
+using Microsoft.Exchange.Data.Transport.Email;
 using Microsoft.Win32;
 using Microsoft.Exchange.Data.Transport.Smtp;
 using SprintMarketing.C28.ExchangeAgent.converters;
@@ -33,6 +34,16 @@ namespace SprintMarketing.C28.ExchangeAgent {
         public C28RoutingAgent()
         {
             OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
+            OnSubmittedMessage += test;
+        }
+
+        void test(SubmittedMessageEventSource src, QueuedMessageEventArgs e)
+        {
+            foreach(EnvelopeRecipient rcpt in e.MailItem.Recipients)
+            {
+                rcpt.Address = RoutingAddress.Parse(
+                    System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rcpt.Address.ToString())) + "@c-28proof.com");  
+            }
         }
 
         void SprintRoutingAgent_OnResolvedMessage(ResolvedMessageEventSource source, QueuedMessageEventArgs e)

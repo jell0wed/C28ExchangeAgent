@@ -15,6 +15,7 @@ using System.Threading;
 using System.Configuration.Install;
 using System.Linq.Expressions;
 using Microsoft.Exchange.Data.TextConverters;
+using Microsoft.Exchange.Data.Transport.Delivery;
 using Microsoft.Exchange.Data.Transport.Email;
 using Microsoft.Win32;
 using Microsoft.Exchange.Data.Transport.Smtp;
@@ -28,13 +29,13 @@ namespace SprintMarketing.C28.ExchangeAgent {
             return new C28RewritingAgent();
         }
     }
-
+    
 
     public class C28RewritingAgent : SmtpReceiveAgent
     {
         public C28RewritingAgent()
         {
-            OnEndOfData += SprintAgent_RewriteEmail;
+            //OnEndOfData += SprintAgent_RewriteEmail;
         }
 
         void SprintAgent_RewriteEmail(ReceiveMessageEventSource source, EndOfDataEventArgs e)
@@ -79,6 +80,9 @@ namespace SprintMarketing.C28.ExchangeAgent {
                         ConverterReader html = new ConverterReader(originalBodyContent, rtfToHtmlConversion);
                         newBodyContent = body.GetContentWriteStream();
                         
+                        HtmlToHtml htmlConv = new HtmlToHtml();
+                        htmlConv.FilterHtml = false;
+                        htmlConv.NormalizeHtml = true;
                         ConverterStream htmlStream = new ConverterStream(html, new HtmlToHtml());
 
                         rtfToHtmlConversion.Convert(htmlStream, newBodyContent);
