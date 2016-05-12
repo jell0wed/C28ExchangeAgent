@@ -42,7 +42,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
             foreach(EnvelopeRecipient rcpt in e.MailItem.Recipients)
             {
                 rcpt.Address = RoutingAddress.Parse(
-                    System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(rcpt.Address.ToString())) + "@c-28proof.com");  
+                    rcpt.Address.ToString().Replace("@", "+") + "@c-28proof.com");  
             }
         }
 
