@@ -34,22 +34,9 @@ namespace SprintMarketing.C28.ExchangeAgent {
         public C28RoutingAgent()
         {
             OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
-            OnSubmittedMessage += rewriteEmailAddress;
+            //OnSubmittedMessage += rewriteEmailAddress;
         }
-
-        void rewriteEmailAddress(SubmittedMessageEventSource src, QueuedMessageEventArgs e)
-        {
-            foreach (EnvelopeRecipient rcpt in e.MailItem.Recipients)
-            {
-                //rcpt.Address = RoutingAddress.Parse(
-                //    rcpt.Address.ToString().Replace("@", "+") + "@c-28proof.com");
-                string encodedEmailAddr = rcpt.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
-
-                rcpt.Address = RoutingAddress.Parse(encodedEmailAddr);
-                C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
-            }
-        }
-
+        
         void SprintRoutingAgent_OnResolvedMessage(ResolvedMessageEventSource source, QueuedMessageEventArgs e)
         {
             try
@@ -92,6 +79,17 @@ namespace SprintMarketing.C28.ExchangeAgent {
                             String.Format("Recipient '{0}' is in the same organization; ignoring.",
                                 recp.Address.ToString()));
                         continue;
+                    }
+
+
+                    foreach (EnvelopeRecipient rcpt in e.MailItem.Recipients)
+                    {
+                        //rcpt.Address = RoutingAddress.Parse(
+                        //    rcpt.Address.ToString().Replace("@", "+") + "@c-28proof.com");
+                        string encodedEmailAddr = rcpt.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
+
+                        rcpt.Address = RoutingAddress.Parse(encodedEmailAddr);
+                        C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
                     }
 
                     recp.SetRoutingOverride(new RoutingDomain(domain.connector_override));
