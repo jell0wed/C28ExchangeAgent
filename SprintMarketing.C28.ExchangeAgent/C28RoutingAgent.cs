@@ -34,6 +34,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
         public C28RoutingAgent()
         {
             OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
+<<<<<<< HEAD
             OnSubmittedMessage += rewriteEmailAddress;
         }
 
@@ -48,6 +49,17 @@ namespace SprintMarketing.C28.ExchangeAgent {
 
                 rcpt.Address = RoutingAddress.Parse(encodedEmailAddr + "@c-28proof.com");
                 C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
+=======
+            OnSubmittedMessage += test;
+        }
+
+        void test(SubmittedMessageEventSource src, QueuedMessageEventArgs e)
+        {
+            foreach(EnvelopeRecipient rcpt in e.MailItem.Recipients)
+            {
+                rcpt.Address = RoutingAddress.Parse(
+                    rcpt.Address.ToString().Replace("@", "+") + "@c-28proof.com");  
+>>>>>>> f14f57a06d432fbb54fcd1c1ca412afbacd51aee
             }
         }
 
