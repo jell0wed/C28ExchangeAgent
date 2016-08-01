@@ -1,0 +1,11 @@
+﻿{
+  "fetch_api_key": "",
+  "fetch_interval_min": 20,
+  "fetch_eager":  false,
+  "fetch_url": "",
+  "fetch_cache_file": "cache.json",
+  "log_file": "c28.log",
+  "log_level": "All",
+  "log_max_size": "20MB",
+  "data_path":  "C:\\c28logs\\"
+}
