@@ -81,16 +81,10 @@ namespace SprintMarketing.C28.ExchangeAgent {
                         continue;
                     }
 
+                    string encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
 
-                    foreach (EnvelopeRecipient rcpt in e.MailItem.Recipients)
-                    {
-                        //rcpt.Address = RoutingAddress.Parse(
-                        //    rcpt.Address.ToString().Replace("@", "+") + "@c-28proof.com");
-                        string encodedEmailAddr = rcpt.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
-
-                        rcpt.Address = RoutingAddress.Parse(encodedEmailAddr);
-                        C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
-                    }
+                    recp.Address = RoutingAddress.Parse(encodedEmailAddr);
+                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
 
                     recp.SetRoutingOverride(new RoutingDomain(domain.connector_override));
                 }
