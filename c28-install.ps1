@@ -19,7 +19,7 @@ Write-Host "Stopping MSExchangeTransport service"
 Stop-Service -Name "Microsoft Exchange Transport"
 
 Write-Host "Resetting IIS services"
-.\iisreset.exe
+iisreset.exe
 
 Write-Host "Deleting old files"
 Remove-Item "$agent_dir" -Force -Recurse -ErrorAction SilentlyContinue
@@ -40,5 +40,5 @@ Set-TransportAgent -Priority 2 "C28 Transport Agent" -Confirm:$false
 Get-TransportAgent "C28 Rewriting Agent" | Enable-TransportAgent -Confirm:$false
 Get-TransportAgent "C28 Transport Agent" | Enable-TransportAgent -Confirm:$false
 
-.\iisreset.exe
+iisreset.exe
 Start-Service -Name "Microsoft Exchange Transport"
