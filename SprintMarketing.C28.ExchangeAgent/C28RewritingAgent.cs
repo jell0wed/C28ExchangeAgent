@@ -1,25 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Microsoft.Exchange.Data.Transport;
-using Microsoft.Exchange.Data.Transport.Routing;
-using SprintMarketing.C28.ExchangeAgent.API;
 using SprintMarketing.C28.ExchangeAgent.API.Models;
 
-using System.Text;
-using System.Globalization;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Threading;
-using System.Configuration.Install;
-using System.Linq.Expressions;
-using Microsoft.Exchange.Data.TextConverters;
-using Microsoft.Exchange.Data.Transport.Delivery;
-using Microsoft.Exchange.Data.Transport.Email;
-using Microsoft.Win32;
 using Microsoft.Exchange.Data.Transport.Smtp;
-using SprintMarketing.C28.ExchangeAgent.converters;
 
 namespace SprintMarketing.C28.ExchangeAgent {
     public class C28RewritingFactory : SmtpReceiveAgentFactory
@@ -35,74 +18,66 @@ namespace SprintMarketing.C28.ExchangeAgent {
     {
         public C28RewritingAgent()
         {
-            //OnEndOfData += SprintAgent_RewriteEmail;
+            OnEndOfData += SprintAgent_RewriteEmail;
         }
 
         void SprintAgent_RewriteEmail(ReceiveMessageEventSource source, EndOfDataEventArgs e)
         {
-            C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Starting rewriting");
             try
             {
                 var context = C28AgentManager.getInstance().getContext();
                 if (!context.shouldBeHandledByC28(e.MailItem))
                 {
+                    C28Logger.Info(C28Logger.C28LoggerType.AGENT,
+                        String.Format("Message from '{0}'. Domain is not present, ignoring.",
+                            e.MailItem.FromAddress.ToString()));
                     return;
                 }
-                
+
                 C28ExchangeDomain domain = context.exchangeData.getDomain(e.MailItem.FromAddress.DomainPart);
                 if (domain == null)
                 {
+                    C28Logger.Info(C28Logger.C28LoggerType.AGENT, String.Format("Domain '{0}' could not be found... Skipping entry", e.MailItem.FromAddress.DomainPart));
                     return;
                 }
 
-                C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Email is set to be rewritted. Starting rewriting process.");
-                
-                try
+                RoutingAddress fromAddr = e.MailItem.FromAddress;
+                C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
+                    String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart,
+                        domain.connector_override));
+                foreach (var recp in e.MailItem.Recipients)
                 {
-                    EmailMessage message = e.MailItem.Message;
-                    Stream originalBodyContent = null;
-                    Stream newBodyContent = null;
-                    Body body = message.Body;
-                    BodyFormat bodyFormat = message.Body.BodyFormat;
-
-                    if (!body.TryGetContentReadStream(out originalBodyContent))
+                    if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower() &&
+                        domain.same_domain_action == "LocalDelivery")
                     {
-                        return;
+                        C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
+                            String.Format(
+                                "Message from '{0}' to '{1}' was ignored; both are on the same internal domain.",
+                                fromAddr.ToString(), recp.Address.ToString()));
+                        continue;
                     }
-                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, String.Format("Rewriting !! ... BodyFormat = {0}", bodyFormat.ToString()));
-                    if (BodyFormat.Rtf == bodyFormat)
+                    if (recp.RecipientCategory == RecipientCategory.InSameOrganization &&
+                        context.exchangeData.currentClient.same_organization_action == "LocalDelivery")
                     {
-                        C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewriting -- Rtf body detected, trying to decode !! ... ");
-                        //ConverterStream uncompressedRtf = new ConverterStream(originalBodyContent, new RtfCompressedToRtf(), ConverterStreamAccess.Read);
-                        RtfToHtml rtfToHtmlConversion = new RtfToHtml();
-                        rtfToHtmlConversion.HeaderFooterFormat = HeaderFooterFormat.Html;
-                        rtfToHtmlConversion.NormalizeHtml = true;
-                        ConverterReader html = new ConverterReader(originalBodyContent, rtfToHtmlConversion);
-                        newBodyContent = body.GetContentWriteStream();
-                        
-                        HtmlToHtml htmlConv = new HtmlToHtml();
-                        htmlConv.FilterHtml = false;
-                        htmlConv.NormalizeHtml = true;
-                        ConverterStream htmlStream = new ConverterStream(html, new HtmlToHtml());
-
-                        rtfToHtmlConversion.Convert(htmlStream, newBodyContent);
-
-                        originalBodyContent.Close();
-                        newBodyContent.Close();
-
-                        e.MailItem.Message.Subject += "-- rewrited";
+                        C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
+                            String.Format("Recipient '{0}' is in the same organization; ignoring.",
+                                recp.Address.ToString()));
+                        continue;
                     }
-                }
-                catch (C28ConverterException ee)
-                {
-                    C28Logger.Error(C28Logger.C28LoggerType.AGENT, "Error while trying to convert message", ee);
+
+                    string encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
+
+                    recp.Address = RoutingAddress.Parse(encodedEmailAddr);
+                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
+
+                    recp.SetRoutingOverride(new RoutingDomain(domain.connector_override));
                 }
 
                 return;
             }
             catch (Exception ee)
             {
-                C28Logger.Fatal(C28Logger.C28LoggerType.AGENT, "Unhandled Exception while rewriting", ee);
+                C28Logger.Fatal(C28Logger.C28LoggerType.AGENT, "Unhandled Exception", ee);
             }
         }
     }
