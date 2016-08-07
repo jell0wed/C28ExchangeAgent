@@ -15,12 +15,13 @@ The script will automatically remove any previsouly installed agent & delete the
 You might see some errors (in red) while performing the install (debug info is in yellow). Don't worry too much about it for the first few times.
 
 This script does the following: 
-1- Uninstall previously installed agents
-2- Fetches the newest version on github for the agents
-3- Restarts IIS Services & stop MSExchangeAgent
-4- Installs the new agents
-5- Register the new agents
-6- Restarts IIS Services && start MSExchangeAgent
+
+1. Uninstall previously installed agents
+2. Fetches the newest version on github for the agents
+3. Restarts IIS Services & stop MSExchangeAgent
+4. Installs the new agents
+5. Register the new agents
+6. Restarts IIS Services && start MSExchangeAgent
 
 
 ## Manual installation (deprecated)
