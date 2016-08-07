@@ -1,5 +1,31 @@
 # C28 Exchange Transport Agent
 
+## Installation from the PowerShell script:
+
+- Copy the following content [(click here)](https://raw.githubusercontent.com/jell0wed/C28ExchangeAgent/master/c28-install.ps1) to a script file located at `C:\c28-install.ps1`.
+- Fire up an Exchange Management Console
+- Type in the following : 
+
+```
+&"C:\c28-install.ps1"
+```
+
+The script will automatically remove any previsouly installed agent & delete the appropriate files. Additionnaly, it fetches and installs the latest version of the agent.
+
+You might see some errors (in red) while performing the install (debug info is in yellow). Don't worry too much about it for the first few times.
+
+This script does the following: 
+1- Uninstall previously installed agents
+2- Fetches the newest version on github for the agents
+3- Restarts IIS Services & stop MSExchangeAgent
+4- Installs the new agents
+5- Register the new agents
+6- Restarts IIS Services && start MSExchangeAgent
+
+
+## Manual installation (deprecated)
+
+
 #### 1. Make sure to uninstall previously installed version of the C28 Agent
 
 **From the Exchange PowerShell:**
