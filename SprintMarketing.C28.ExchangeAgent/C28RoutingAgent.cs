@@ -80,12 +80,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
                                 recp.Address.ToString()));
                         continue;
                     }
-
-                    string encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
-
-                    recp.Address = RoutingAddress.Parse(encodedEmailAddr);
-                    C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
-
+                    
                     recp.SetRoutingOverride(new RoutingDomain(domain.connector_override));
                 }
 
