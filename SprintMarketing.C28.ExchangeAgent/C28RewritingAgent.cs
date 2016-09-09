@@ -45,6 +45,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
                 C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
                     String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart,
                         domain.connector_override));
+                
                 foreach (var recp in e.MailItem.Recipients)
                 {
                     if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower() &&
@@ -66,7 +67,17 @@ namespace SprintMarketing.C28.ExchangeAgent {
                     }
 
                     string encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@rewrite.c-28proof.com";
-
+                    object recpType = null;
+                    if (recp.Properties.TryGetValue("Microsoft.Exchange.Transport.RecipientP2Type", out recpType)) {
+                        if ((Int32)recpType == 1) { // to recipients
+                            encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@to.rewrite.c-28proof.com";
+                        } else if ((Int32)recpType == 2) { // cc recipients
+                            encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@cc.rewrite.c-28proof.com";
+                        } else if ((Int32)recpType == 3) { // bcc recipients
+                            encodedEmailAddr = recp.Address.ToString().Replace("@", "__at__") + "@bcc.rewrite.c-28proof.com";
+                        }
+                    }
+                    
                     recp.Address = RoutingAddress.Parse(encodedEmailAddr);
                     C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Rewrited to " + encodedEmailAddr);
                 }
