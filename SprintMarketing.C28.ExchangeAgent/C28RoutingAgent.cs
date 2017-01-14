@@ -33,16 +33,15 @@ namespace SprintMarketing.C28.ExchangeAgent {
     {
         public C28RoutingAgent()
         {
-            //OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
-            OnSubmittedMessage += SprintRoutingAgent_OnResolvedMessage;
+            OnResolvedMessage += SprintRoutingAgent_OnResolvedMessage;
+            //OnSubmittedMessage += rewriteEmailAddress;
         }
         
-
-        void SprintRoutingAgent_OnResolvedMessage(SubmittedMessageEventSource source, QueuedMessageEventArgs e)
+        void SprintRoutingAgent_OnResolvedMessage(ResolvedMessageEventSource source, QueuedMessageEventArgs e)
         {
             try
             {
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Is routing agent");
+                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Is routing");
                 var context = C28AgentManager.getInstance().getContext();
                 if (!context.shouldBeHandledByC28(e.MailItem))
                 {

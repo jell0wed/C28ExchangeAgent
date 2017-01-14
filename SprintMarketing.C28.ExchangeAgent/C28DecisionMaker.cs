@@ -19,6 +19,17 @@ namespace SprintMarketing.C28.ExchangeAgent
             this.exchangeData = dat;
         }
 
+        public bool isOutbound(MailItem msg) {
+            Header directionality = msg.Message.MimeDocument.RootPart.Headers.FindFirst("X-MS-Exchange-Organization-MessageDirectionality");
+            if (directionality == null)
+            {
+                return false;
+            }
+            else {
+                return directionality.Value.ToLower() == "originating";
+            }
+        }
+
         public bool shouldBeHandledByC28(MailItem msg)
         {
             try
