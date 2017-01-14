@@ -32,23 +32,6 @@ namespace SprintMarketing.C28.ExchangeAgent
 
         public bool shouldBeHandledByC28(MailItem msg)
         {
-            try
-            {
-                Header directionalityHeader = msg.Message.MimeDocument.RootPart.Headers.FindFirst("X-MS-Exchange-Organization-MessageDirectionality");
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, String.Format("Directionality from header is {0}", directionalityHeader.Value));
-            }
-            catch (ArgumentNullException e) {
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Error while getting directionality from header");
-            }
-
-            try
-            {
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "deliveryMethod = " + msg.InboundDeliveryMethod.ToString());
-            }
-            catch (Exception e) {
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "error while getting delivery method");
-            }
-
             RoutingAddress fromAddr = msg.FromAddress;
             if (!this.exchangeData.hasDomain(msg.FromAddress.DomainPart))
             {
