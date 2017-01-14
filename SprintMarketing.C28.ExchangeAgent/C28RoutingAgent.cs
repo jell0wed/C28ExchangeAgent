@@ -41,8 +41,12 @@ namespace SprintMarketing.C28.ExchangeAgent {
         {
             try
             {
-                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Is routing");
                 var context = C28AgentManager.getInstance().getContext();
+                if (!context.isOutbound(e.MailItem))
+                {
+                    return; // dont handle inbound messages
+                }
+
                 if (!context.shouldBeHandledByC28(e.MailItem))
                 {
                     C28Logger.Info(C28Logger.C28LoggerType.AGENT,
