@@ -26,6 +26,7 @@ namespace SprintMarketing.C28.ExchangeAgent {
             try
             {
                 var context = C28AgentManager.getInstance().getContext();
+                C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Is rewriter");
                 if (!context.shouldBeHandledByC28(e.MailItem))
                 {
                     C28Logger.Info(C28Logger.C28LoggerType.AGENT,
