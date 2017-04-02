@@ -1,4 +1,4 @@
-$url = "https://github.com/jell0wed/C28ExchangeAgent/archive/master.zip"
+$url = "https://github.com/sprintmarketing/c28exchange-agent/archive/master.zip"
 $out = "$env:C28AgentInstallDir\master.zip"
 $agent_loc = "$env:C28AgentInstallDir"
 $agent_dir = "$agent_loc\C28ExchangeAgent-master\"
