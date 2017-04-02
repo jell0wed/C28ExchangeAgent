@@ -2,7 +2,7 @@
 
 ## Installation from the PowerShell script:
 
-- Copy the following content [(click here)](https://raw.githubusercontent.com/jell0wed/C28ExchangeAgent/master/c28-install.ps1) to a script file located at `C:\c28-install.ps1`.
+- Copy the following content [(click here)](https://raw.githubusercontent.com/sprintmarketing/c28exchange-agent/master/c28-install.ps1) to a script file located at `C:\c28-install.ps1`.
 - Fire up an Exchange Management Console
 - Type in the following : 
 
