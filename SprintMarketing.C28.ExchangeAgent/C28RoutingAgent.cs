@@ -85,7 +85,14 @@ namespace SprintMarketing.C28.ExchangeAgent {
                                 recp.Address.ToString()));
                         continue;
                     }
-                    
+                    if (domain.isRecipientExcluded(recp.Address.ToString()))
+                    {
+                        C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
+                            String.Format("Recipient '{0}' matched an excluded recipient pattern; ignoring.",
+                            recp.Address.ToString()));
+                        continue;
+                    }
+
                     recp.SetRoutingOverride(new RoutingDomain(domain.connector_override));
                 }
 

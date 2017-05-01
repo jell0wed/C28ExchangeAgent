@@ -66,6 +66,7 @@
     <Compile Include="api\models\C28ExchangeClient.cs" />
     <Compile Include="api\models\C28ExchangeData.cs" />
     <Compile Include="api\models\C28ExchangeDomain.cs" />
+    <Compile Include="api\models\C28ExchangeRecipientExclusion.cs" />
     <Compile Include="api\models\C28ExchangeExclusion.cs" />
     <Compile Include="C28AgentConfig.cs" />
     <Compile Include="C28AgentManager.cs" />
