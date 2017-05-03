@@ -49,15 +49,21 @@ namespace SprintMarketing.C28.ExchangeAgent {
                 C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
                     String.Format("Domain '{0}' is set to be overriden to routing domain '{1}'", fromAddr.DomainPart,
                         domain.connector_override));
-                
+
+                bool allOnSameExchangeDomain = true;
+                foreach (var recp in e.MailItem.Recipients) {
+                    allOnSameExchangeDomain = allOnSameExchangeDomain &&
+                        recp.Address.DomainPart.ToLower() == domain.domain.ToLower();
+                }
+
                 foreach (var recp in e.MailItem.Recipients)
                 {
-                    if (fromAddr.DomainPart.ToLower() == recp.Address.DomainPart.ToLower() &&
+                    if (allOnSameExchangeDomain &&
                         domain.same_domain_action == "LocalDelivery")
                     {
                         C28Logger.Debug(C28Logger.C28LoggerType.AGENT,
                             String.Format(
-                                "Message from '{0}' to '{1}' was ignored; both are on the same internal domain.",
+                                "Message from '{0}' to '{1}' was ignored; all recipients are on the same internal domain.",
                                 fromAddr.ToString(), recp.Address.ToString()));
                         continue;
                     }

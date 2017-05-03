@@ -25,8 +25,10 @@ namespace SprintMarketing.C28.ExchangeAgent.API.Models
         [JsonProperty(PropertyName = "same_domain_action")]
         public String same_domain_action { get; private set; }
         
-        public bool isEmailExcluded(String email) {
-            return this.exclusions.Any(e => e.sender_address.ToLower() == email.ToLower());
+        public bool isEmailExcluded(string email) {
+            email = email.ToLower();
+            List<Regex> senderExclusionRegexes = this.exclusions.Select(e => new Regex(e.sender_address)).ToList();
+            return senderExclusionRegexes.Any(e => e.IsMatch(email));
         }
 
         public bool isRecipientExcluded(string rcpt) {
