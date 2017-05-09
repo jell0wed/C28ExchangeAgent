@@ -66,6 +66,8 @@ namespace SprintMarketing.C28.ExchangeAgent
                     C28Logger.Info(C28Logger.C28LoggerType.AGENT, "Cache is invalid. Data from the API will be used.");
                     exchangeData = api.getExchangeData();
                     this.cache.updateCache(exchangeData);
+                    this.api.postHeartbeat();
+                    C28Logger.Info(C28Logger.C28LoggerType.API, "Posted Heartbeat to exchange server.");
                 }
                 else
                 {

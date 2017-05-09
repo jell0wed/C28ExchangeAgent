@@ -82,6 +82,7 @@
     <Compile Include="converters\C28MessageConverterFactory.cs" />
     <Compile Include="converters\C28TextBasedMessageConverter.cs" />
     <Compile Include="converters\C28RtfMessageConverter.cs" />
+    <Compile Include="NetworkUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

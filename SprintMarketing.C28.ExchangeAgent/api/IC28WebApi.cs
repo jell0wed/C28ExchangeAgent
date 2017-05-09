@@ -10,5 +10,6 @@ namespace SprintMarketing.C28.ExchangeAgent.API
     interface IC28WebApi
     {
         C28ExchangeData getExchangeData();
+        void postHeartbeat();
     }
 }

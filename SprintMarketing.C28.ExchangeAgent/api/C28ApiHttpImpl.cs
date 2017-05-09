@@ -81,5 +81,39 @@ namespace SprintMarketing.C28.ExchangeAgent.API
 
             return data;
         }
+
+        public void postHeartbeat() {
+            List<string> macAddrs = NetworkUtilities.GetMacAddress();
+            var httpPostReq = (HttpWebRequest)WebRequest.Create(this.getUri("/heartbeat"));
+            httpPostReq.ContentType = "application/json";
+            httpPostReq.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpPostReq.GetRequestStream()))
+            {
+                string macAddrJson = JsonConvert.SerializeObject(macAddrs);
+                streamWriter.Write(macAddrJson);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            using (HttpWebResponse resp = (HttpWebResponse)httpPostReq.GetResponse())
+            using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+            {
+                String res = sr.ReadToEnd();
+                JObject resJson = JObject.Parse(res);
+                if (resJson.IsValid(json_schema_error))
+                {
+                    if (resp.StatusCode != HttpStatusCode.OK)
+                    {
+                        C28Logger.Warn(C28Logger.C28LoggerType.API, String.Format("Potentially invalid status code from a GET HTTP Response (received {0})", resp.StatusCode));
+                    }
+
+                    C28APIError err = JsonConvert.DeserializeObject<C28APIError>(res);
+                    C28Logger.Error(C28Logger.C28LoggerType.API, String.Format("Unexpected API Error while processing GET Request : {0}", err.message));
+                    C28Logger.Debug(C28Logger.C28LoggerType.API, "Received json: " + res);
+                    throw new C28APIException(String.Format("Unexpected API Error : {0}", err.message));
+                }
+            }
+        }
     }
 }
