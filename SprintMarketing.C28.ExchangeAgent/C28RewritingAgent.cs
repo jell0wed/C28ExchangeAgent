@@ -23,6 +23,18 @@ namespace SprintMarketing.C28.ExchangeAgent {
 
         void SprintAgent_RewriteEmail(ReceiveMessageEventSource source, EndOfDataEventArgs e)
         {
+            string rcpts = "";
+            foreach (var r in e.MailItem.Message.To) {
+                rcpts += r.SmtpAddress + ", ";
+            }
+            foreach (var r in e.MailItem.Message.Cc) {
+                rcpts += r.SmtpAddress + ", ";
+            }
+            foreach (var r in e.MailItem.Message.Bcc) {
+                rcpts += r.SmtpAddress + ", ";
+            }
+            
+            C28Logger.Info(C28Logger.C28LoggerType.REWRITER, "Message id = " + e.MailItem.Message.MessageId + ", recipients = " + rcpts + "; enveloppe id = " + e.MailItem.EnvelopeId + ", smtpsession id = " + e.SmtpSession.SessionId);
             try
             {
                 var context = C28AgentManager.getInstance().getContext();
